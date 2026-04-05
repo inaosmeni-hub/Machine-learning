@@ -81,3 +81,38 @@ The dataset has no missing values but contains 125 duplicate rows (10.94%), whic
 ```
 pandas, numpy, matplotlib, scipy, scikit-learn
 ```
+
+##Project 3 — Heart Disease Prediction: Supervised Learning & Model Comparison
+
+Notebook: heartfailure.ipynb
+Dataset: heart.csv — 918 samples, 11 features, binary target (heart disease: yes/no)
+What the notebook covers
+
+##Data loading and quality check
+
+Label encoding of categorical features
+Train/test split (70/30)
+Training and evaluation of four classifiers: Decision Tree, Linear Regression, Logistic Regression, and Naive Bayes
+Hyperparameter tuning for Naive Bayes using GridSearchCV
+Model comparison across accuracy, precision, recall, and F1 score
+ROC curves and AUC for all models
+Confusion matrices and per-class precision/recall analysis
+Feature importance (Decision Tree) and coefficient analysis (Logistic Regression)
+
+##Key findings
+
+The dataset is clean with no missing values and a near-balanced target (55.3% positive cases). Logistic Regression achieved the best overall accuracy (86.2%) with an AUC of 0.928. After hyperparameter tuning with GridSearchCV, Naive Bayes improved from 84.2% to 87.3% accuracy and reached the highest AUC of 0.933. Linear Regression, used here as a baseline classifier with a 0.5 threshold, performed competitively but is not appropriate for binary classification tasks. The most important feature for the Decision Tree was ST_Slope, consistent with its clinical relevance as an ECG indicator.
+Model results
+ModelAccuracyAUC-ROCDecision Tree (max_depth=4)0.83700.9121Linear Regression (threshold=0.5)0.8370—Logistic Regression0.86230.9276Naive Bayes (default)0.84240.9090Naive Bayes (tuned)0.87320.9331
+Observations
+
+The dataset is well-balanced and complete, with no missing values and a 55/45 split between positive and negative cases. This avoids the class imbalance problems common in medical datasets and means standard accuracy is a reliable evaluation metric here.
+Logistic Regression outperforms the other models in accuracy before tuning, and also produces the best-calibrated probability estimates among the baseline models (AUC = 0.928). Its coefficient analysis shows that ST_Slope, ExerciseAngina, and Oldpeak are the strongest predictors of heart disease, which aligns with established clinical knowledge.
+Linear Regression is not suited for binary classification but was included as a baseline. Despite reaching the same accuracy as the Decision Tree when thresholded at 0.5, its R² of 0.44 and the clear non-linearity in its residual plot confirm that the model is not capturing the structure of the problem correctly.
+Hyperparameter tuning significantly improved Naive Bayes. Using GridSearchCV across seven values of var_smoothing, the optimal value of 1e-7 raised accuracy from 84.2% to 87.3% and AUC from 0.909 to 0.933 — making it the top-performing model overall after tuning. This highlights how sensitive Gaussian Naive Bayes can be to its smoothing parameter.
+All four models show higher precision for the Disease class than for No Disease, meaning they are better at correctly identifying sick patients when they predict disease than at identifying healthy patients. In a clinical context, recall for the Disease class is particularly important — a false negative (missing a sick patient) is more costly than a false positive — and Naive Bayes achieves the best balance across both metrics after tuning.
+
+##Requirements
+```
+pandas, numpy, matplotlib, scipy, scikit-learn
+```
