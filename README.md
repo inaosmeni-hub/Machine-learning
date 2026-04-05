@@ -116,3 +116,39 @@ All four models show higher precision for the Disease class than for No Disease,
 ```
 pandas, numpy, matplotlib, scipy, scikit-learn
 ```
+
+##Project 4 — TMDB Movies: Unsupervised Learning
+
+Notebook: tmdb_unsupervised.ipynb
+Dataset: tmdb_5000_movies.csv — 4,803 movies, 20 features including budget, revenue, genres, keywords, and ratings
+What the notebook covers
+
+##Feature engineering from JSON columns (genres, keywords, production companies, countries, languages)
+
+Handling zero values in budget and revenue (treated as missing)
+StandardScaler preprocessing
+K-Means clustering with Elbow method (SSE) and Silhouette score for optimal k selection
+DBSCAN clustering with grid search over eps and min_samples
+Silhouette evaluation and per-sample silhouette plot
+PCA 2D projection for cluster visualisation
+Sample movies per cluster and cluster profile analysis
+Side-by-side comparison of K-Means vs DBSCAN
+
+##Engineered features
+
+FeatureDescriptionbudgetProduction budget (zeros treated as missing)revenueBox office revenue (zeros treated as missing)runtimeFilm duration in minutespopularityTMDB popularity scorevote_averageAverage user ratingvote_countNumber of user votesnum_genresNumber of genres listednum_keywordsNumber of keywords listednum_production_companiesNumber of production companiesnum_countriesNumber of production countriesnum_languagesNumber of spoken languagesis_english1 if original language is English
+Key findings
+After dropping rows with missing budget or revenue, 3,229 movies remained for clustering. K-Means with k=3 achieved the best Silhouette score (0.37), separating movies into low-budget/low-revenue independent films, mid-range productions, and large-scale blockbusters. DBSCAN with eps=0.5 and min_samples=5 achieved a stronger Silhouette of 0.59 on non-noise points, identifying tighter and more compact clusters while flagging outliers — films with unusual combinations of scale, popularity, and genre breadth.
+Observations
+
+Over 1,000 movies have a budget of zero and over 1,400 have a revenue of zero in the raw dataset, which are missing values rather than true zeros. Treating these as missing and dropping affected rows reduces the dataset to 3,229 movies but ensures that clustering is based on real financial data rather than artefacts of incomplete records.
+The Elbow method shows a gradual decline in SSE without a sharp bend, which is typical for real-world movie data where clusters are not perfectly separated. The Silhouette score peaks at k=3, suggesting three broad groupings are the most natural partition of this dataset.
+K-Means with k=3 separates movies primarily along production scale — one cluster captures small independent productions with low budgets, low revenue, and low vote counts; a second captures mid-range studio films; and a third captures major blockbusters with high budgets, high revenue, high popularity, and large vote counts. The genre and keyword counts also increase progressively across clusters, reflecting the richer metadata coverage of bigger productions.
+DBSCAN achieves a higher Silhouette score than K-Means on the clustered points (0.59 vs 0.37), indicating that the dense regions it identifies are more internally coherent. It also flags outlier movies that do not conform to any cluster — typically films with extreme popularity or unusual financial profiles relative to their genre and production scale, such as very low-budget films that became unexpectedly popular.
+PCA reveals that the first two principal components capture a meaningful portion of variance, with PC1 primarily driven by financial scale (budget, revenue, vote count) and PC2 capturing genre and language diversity. This confirms that production scale is the dominant organising principle in this dataset, and that unsupervised learning can recover a commercially meaningful segmentation of the film industry without any labelled data.
+
+
+##Requirements
+```
+pandas, numpy, matplotlib, scipy, scikit-learn
+```
