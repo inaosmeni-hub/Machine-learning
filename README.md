@@ -152,3 +152,36 @@ PCA reveals that the first two principal components capture a meaningful portion
 ```
 pandas, numpy, matplotlib, scipy, scikit-learn
 ```
+
+##Project 5 — Titanic Survival Prediction: Neural Networks
+Notebook: titanic_nn.ipynb
+Dataset: Titanic-Dataset.csv — 891 passengers, survival classification
+What the notebook covers
+
+##Data preprocessing: dropping irrelevant columns, median/mode imputation, label encoding, one-hot encoding
+Stratified train/test split (80/20) and StandardScaler normalisation
+Model 1: Basic Neural Network — 1 hidden layer (16 units, ReLU, sigmoid output)
+Model 2: Deep Neural Network — 3 hidden layers (128 → 64 → 32 units) with L2 regularisation and Dropout
+Training history plots: loss and accuracy over epochs for both models
+Confusion matrices and classification reports
+ROC curve and AUC comparison between both models
+Hyperparameter experiments across 4 configurations (learning rate, batch size, L2, dropout)
+
+##Model architectures
+ModelLayersRegularisationEpochsEarly StoppingBasic NNInput → 16 → 1None80NoDeep NNInput → 128 → 64 → 32 → 1L2 + Dropout (0.3)up to 150Yes (patience=10)
+Hyperparameter configurations tested
+LRBatchL2Dropout0.01160.0010.20.001320.010.30.0001640.0010.40.005320.050.3
+Key findings
+Both models achieve competitive accuracy on the Titanic dataset. The Deep NN benefits from L2 regularisation and Dropout to prevent overfitting on a small dataset of 891 samples. Early stopping with patience=10 prevents unnecessary training. Hyperparameter experiments show that lr=0.001 with batch=32 provides the best balance between convergence speed and generalisation. AUC is used alongside accuracy to account for the slight class imbalance between survivors and non-survivors.
+Observations
+
+The Titanic dataset is small (891 rows), which makes overfitting a real concern for neural networks. The basic model with a single hidden layer of 16 units is deliberately kept shallow to serve as a stable baseline, while the deep model compensates for its greater capacity with L2 regularisation and Dropout at each major hidden layer.
+Early stopping on validation loss is essential for the Deep NN. Without it, the model continues to minimise training loss while validation loss starts to rise — a textbook overfitting pattern. With patience=10 and restore_best_weights=True, the model automatically reverts to the checkpoint with the best generalisation performance.
+A learning rate of 0.001 with the Adam optimiser consistently outperforms both higher and lower alternatives in the hyperparameter experiments. Higher learning rates (0.01, 0.005) cause unstable validation loss curves, while a very low rate (0.0001) converges too slowly and often stops before reaching a good solution within the epoch budget.
+AUC is a more informative evaluation metric than accuracy alone for this dataset. The Titanic survival rate is approximately 38%, creating a moderate class imbalance where a naive classifier predicting "not survived" would still achieve ~62% accuracy. The ROC curve and AUC measure the model's ability to rank survivors above non-survivors regardless of the classification threshold, providing a clearer picture of discriminative power.
+On a tabular dataset of this size, the performance gap between the Basic NN and the Deep NN is smaller than one might expect. The additional layers in the Deep NN do not automatically guarantee better results — regularisation choices, learning rate, and early stopping matter more than raw model depth. This reflects a broader principle in applied machine learning: on small structured datasets, model complexity should be scaled carefully to avoid the regularisation burden outweighing the capacity benefit.
+
+##Requirements
+```
+pandas, numpy, matplotlib, scipy, scikit-learn
+```
